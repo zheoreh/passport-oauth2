@@ -1,5 +1,32 @@
 # passport-oauth2
 
+This fork implements optional callback function that can be used to pass client id and secret 
+to initialise oauth2 each time directly before an authentication. This function is called 
+with the request object.
+
+```js
+passport.use(new OAuth2Strategy({
+    authorizationURL: 'https://www.example.com/oauth2/authorize',
+    tokenURL: 'https://www.example.com/oauth2/token',
+    getClient: async function(req) {
+      // some possible async operations
+      // ...
+      return {
+        id: '#####',
+        secret: '#####'
+      }
+    },
+    callbackURL: "http://localhost:3000/auth/example/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({ exampleId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+```
+====================================================================================
+
 General-purpose OAuth 2.0 authentication strategy for [Passport](http://passportjs.org/).
 
 This module lets you authenticate using OAuth 2.0 in your Node.js applications.
